@@ -1,2 +1,2 @@
-# Lekker.Luister.Deezer
-A "Lekker" web app to get some music information from Deezer.com, using the 'Deezer for Developers API'
+# Lekker.Luister
+A "Lekker" web app to get some music information from music streaming services such as Deezer, Spotify etc, using their open API's.
