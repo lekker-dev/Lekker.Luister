@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using System;
 
 namespace Lekker.Luister
 {
@@ -26,6 +27,29 @@ namespace Lekker.Luister
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            // Register the Swagger generator and add basic info for the API
+            services.AddSwaggerGen(gen =>
+            {
+                gen.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "Lekker.Luister API",
+                    Description = "A simple API to get 'Lekker' music info from various streaming services.",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "lekker-dev",
+                        Email = "gerhard.mostert83@gmail.com",
+                        Url = new Uri("https://github.com/lekker-dev/Lekker.Luister")
+                    },
+                    License = new Microsoft.OpenApi.Models.OpenApiLicense
+                    {
+                        Name = "MIT License",
+                        Url = new Uri("https://github.com/lekker-dev/Lekker.Luister/blob/develop/LICENSE")
+                    }
+                });
+            }
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,6 +72,16 @@ namespace Lekker.Luister
             {
                 app.UseSpaStaticFiles();
             }
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            //  - specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Lekker.Luister API V1");
+            });
 
             app.UseRouting();
 
