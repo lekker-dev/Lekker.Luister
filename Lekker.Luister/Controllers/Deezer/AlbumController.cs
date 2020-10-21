@@ -1,7 +1,14 @@
-﻿using Lekker.Luister.Models.Response;
+﻿using Lekker.Luister.Models.DeezerApiModels;
+using Lekker.Luister.Models.Response;
+using Lekker.Luister.RestApiClient;
 using Microsoft.AspNetCore.Mvc;
+using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Lekker.Luister.Controllers.Deezer
@@ -11,28 +18,29 @@ namespace Lekker.Luister.Controllers.Deezer
     public class AlbumController : Controller
     {
         [HttpGet("{id}")]
-        public async Task<ActionResult<DeezerAlbumResponse>> GetAlbum(int id)
+        public async Task<ActionResult<DeezerAlbumResponse>> GetAlbum(int id, CancellationToken cancellationToken)
         {
-            var album = new DeezerAlbumResponse()
-            {
-                Title = "Fuz fuz",
-                ArtistName = "The Knacks",
-                CoverUrl = new Uri("https://e-cdns-images.dzcdn.net/images/cover/8e119aaa57aafc3266bc427acb942a9b/250x250-000000-80-0-0.jpg"),
-                Tracks = new List<DeezerTrackResponse>
-                {
-                    new DeezerTrackResponse
-                    {
-                        Number = 1,
-                        Name = "The floox cruze",
-                        Duration = TimeSpan.FromMinutes(3.1)
-                        
-                    }
-                },
-                Link = new Uri("https://www.deezer.com/album/100000")
+            var client = new DeezerClient();
 
+            DeezerAlbum deezerAlbum = await client.GetAlbum(id, cancellationToken);
+
+            var tracks = deezerAlbum.Tracks.GetValueOrDefault("data");
+
+            var albumResponse = new DeezerAlbumResponse
+            {
+                Title = deezerAlbum.Title,
+                Link = new Uri(deezerAlbum.Link),
+                CoverUrl = new Uri(deezerAlbum.Cover_Medium),
+                ArtistName = deezerAlbum.Artist.Name,
+                Tracks = tracks.ConvertAll(t => new DeezerTrackResponse
+                {
+                    Name = t.Title,
+                    Duration = TimeSpan.FromSeconds(t.Duration),
+                    Number = tracks.IndexOf(t) + 1
+                })
             };
 
-            return Ok(album);
+            return Ok(albumResponse);
         }
     }
 }
