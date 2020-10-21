@@ -39,10 +39,10 @@ namespace Lekker.Luister
                     Contact = new OpenApiContact
                     {
                         Name = "lekker-dev",
-                        Email = "gerhard.mostert83@gmail.com",
+                        Email = string.Empty,
                         Url = new Uri("https://github.com/lekker-dev/Lekker.Luister")
                     },
-                    License = new Microsoft.OpenApi.Models.OpenApiLicense
+                    License = new OpenApiLicense
                     {
                         Name = "MIT License",
                         Url = new Uri("https://github.com/lekker-dev/Lekker.Luister/blob/develop/LICENSE")
