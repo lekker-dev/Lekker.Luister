@@ -2,7 +2,7 @@
 
 namespace Lekker.Luister.Models.DeezerApiModels
 {
-    public class DeezerAlbum : DeezerData
+    public class DeezerAlbum
     {
         public string Title { get; set; }
 
